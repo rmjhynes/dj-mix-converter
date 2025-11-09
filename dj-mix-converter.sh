@@ -2,6 +2,8 @@
 
 # Location of .wav files saved from Rekordbox
 TARGET_DIR="$HOME/Music/rekordbox/Recording"
+OUTPUT_DIR="$TARGET_DIR/mp3"
+mkdir -p "$OUTPUT_DIR"
 
 # Create logs and output directories
 TIMESTAMP=$(date +"%d-%m-%Y_%H-%M-%S")
@@ -22,11 +24,11 @@ for file in $WAV_FILES; do
   name=$(basename "$file")
 
   # Convert to mp3 with ffmpeg and tee output to log file
-  ffmpeg -n -i "$file.wav" -codec:a libmp3lame -b:a 320k "${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
+  ffmpeg -n -i "$file.wav" -codec:a libmp3lame -b:a 320k "$OUTPUT_DIR/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
 
   echo "" >> "$LOG_FILE"
   echo "==========================================" >> "$LOG_FILE"
   echo "" >> "$LOG_FILE"
 done
 
-echo "File conversion complete"
+echo "File(s) converted and stored in $OUTPUT_DIR"
