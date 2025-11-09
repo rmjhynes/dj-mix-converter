@@ -40,3 +40,14 @@ for file in $WAV_FILES; do
 done
 
 echo "File(s) converted and stored in $OUTPUT_DIR" | tee -a "$LOG_FILE"
+
+# Give user option to delete original files
+read -p "Would you like to delete the original (.wav and .cue) files? (y/n) " delete
+
+if [ $delete = 'y' ]; then
+  for file in $WAV_FILES; do
+    rm -i ${file}.wav rm ${file}.cue
+  done
+  
+  echo "Original (.wav and .cue) files deleted"
+fi
