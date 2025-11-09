@@ -36,4 +36,4 @@ for file in $WAV_FILES; do
   } >> "$LOG_FILE"
 done
 
-echo "File(s) converted and stored in $OUTPUT_DIR"
+echo "File(s) converted and stored in $OUTPUT_DIR" | tee -a "$LOG_FILE"
