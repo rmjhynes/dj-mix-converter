@@ -45,9 +45,21 @@ echo "File(s) converted and stored in $OUTPUT_DIR" | tee -a "$LOG_FILE"
 read -p "Would you like to delete the original (.wav and .cue) files? (y/n) " delete
 
 if [ $delete = 'y' ]; then
+
+  echo "" >> "$LOG_FILE"
+
   for file in $WAV_FILES; do
-    rm -i ${file}.wav rm ${file}.cue
+    for ext in wav cue; do
+      target="${file%.*}.$ext"
+      if [ -f "$target" ]; then
+        rm "$target"
+        echo "Deleted: $target" >> "$LOG_FILE"
+      else
+        echo "Skipped (not found): $target" >> "$LOG_FILE"
+      fi
+    done
   done
   
-  echo "Original (.wav and .cue) files deleted"
+  echo "" >> "$LOG_FILE"
+  echo "Original (.wav and .cue) files deleted where found" | tee -a "$LOG_FILE"
 fi
