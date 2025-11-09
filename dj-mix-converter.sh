@@ -27,12 +27,10 @@ for file in $WAV_FILES; do
   name=$(basename "$file")
 
   # Convert to mp3 with ffmpeg and tee output to log file
-  ffmpeg \
-    -n \                            # skip creating output if it already exists
-    -i "$file.wav" \
-    -codec:a libmp3lame \           # audio codec - use LAME to encode MP3
-    -b:a 320k \                     # audio bitrate - set constant 320 kbps
-    "$OUTPUT_DIR/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
+  ## -n: skip creating output if it already exists
+  ## -codec:a libmp3lame: audio codec - use LAME to encode MP3
+  ## -b:a 320k: audio bitrate - set constant 320 kbps
+  ffmpeg -n -i "$file.wav" -codec:a libmp3lame -b:a 320k "${OUTPUT_DIR}/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
 
   {
     echo ""
