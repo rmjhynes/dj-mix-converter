@@ -2,6 +2,12 @@
 
 set -o pipefail
 
+# If figlet is available, print the name of the tool in funky text style
+if command -v figlet &>/dev/null; then
+  figlet -f graffiti DJ Mix Converter
+  echo
+fi
+
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "Error: ffmpeg is not installed. Install it and try again." >&2
   exit 1
