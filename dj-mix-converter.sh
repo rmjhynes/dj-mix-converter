@@ -17,20 +17,28 @@ LOG_FILE="logs/mix_conversion_${TIMESTAMP}.log"
   echo ""
 } > "$LOG_FILE"
 
-# Find all .wav files in target directory and remove the file extension
-WAV_FILES=$(find $TARGET_DIR -type f -name '*.wav' | cut -f 1 -d '.')
+# Find all .wav files in target directory and read them into an array.
+# Using `find -print0` with a null-delimited `read` loop preserves filenames
+# that contain spaces (a plain `for file in $(find ...)` would word-split them).
+WAV_FILES=()
+while IFS= read -r -d '' file; do
+  WAV_FILES+=("$file")
+done < <(find "$TARGET_DIR" -type f -name '*.wav' -print0)
 
-# Iterate over list of files and convert to .mp3
-for file in $WAV_FILES; do
+# Iterate over list of files and convert to .mp3.
+# Quoting "${WAV_FILES[@]}" expands each array element as a single argument,
+# so paths with spaces stay intact.
+for file in "${WAV_FILES[@]}"; do
 
-  # Get file name from absolute path
-  name=$(basename "$file")
+  # Get file name from absolute path, stripping the .wav extension.
+  # ${file%.wav} removes the trailing ".wav" via parameter expansion.
+  name=$(basename "${file%.wav}")
 
   # Convert to mp3 with ffmpeg and tee output to log file
   ## -n: skip creating output if it already exists
   ## -codec:a libmp3lame: audio codec - use LAME to encode MP3
   ## -b:a 320k: audio bitrate - set constant 320 kbps
-  ffmpeg -n -i "$file.wav" -codec:a libmp3lame -b:a 320k "${OUTPUT_DIR}/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
+  ffmpeg -n -i "$file" -codec:a libmp3lame -b:a 320k "${OUTPUT_DIR}/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
 
   {
     echo ""
@@ -48,9 +56,13 @@ if [ $delete = 'y' ]; then
 
   echo "" >> "$LOG_FILE"
 
-  for file in $WAV_FILES; do
+  # Iterate the same array we built above; quoting "${WAV_FILES[@]}"
+  # keeps filenames with spaces intact.
+  for file in "${WAV_FILES[@]}"; do
+    # Strip the .wav extension so we can rebuild paths for both extensions.
+    base="${file%.wav}"
     for ext in wav cue; do
-      target="${file%.*}.$ext"
+      target="${base}.${ext}"
       if [ -f "$target" ]; then
         rm "$target"
         echo "Deleted: $target" >> "$LOG_FILE"
