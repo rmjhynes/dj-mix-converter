@@ -34,6 +34,11 @@ while IFS= read -r -d '' file; do
   WAV_FILES+=("$file")
 done < <(find "$TARGET_DIR" -type f -name '*.wav' -print0)
 
+if [ ${#WAV_FILES[@]} -eq 0 ]; then
+  echo "No .wav files found in $TARGET_DIR" | tee -a "$LOG_FILE"
+  exit 0
+fi
+
 # Iterate over list of files and convert to .mp3.
 # Quoting "${WAV_FILES[@]}" expands each array element as a single argument,
 # so paths with spaces stay intact.
