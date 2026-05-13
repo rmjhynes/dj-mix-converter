@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 # Location of .wav files saved from Rekordbox
 TARGET_DIR="${HOME}/Music/rekordbox/Recording"
 OUTPUT_DIR="${TARGET_DIR}/mp3"
