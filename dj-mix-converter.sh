@@ -2,6 +2,11 @@
 
 set -o pipefail
 
+if ! command -v ffmpeg >/dev/null 2>&1; then
+  echo "Error: ffmpeg is not installed. Install it and try again." >&2
+  exit 1
+fi
+
 # Location of .wav files saved from Rekordbox
 TARGET_DIR="${HOME}/Music/rekordbox/Recording"
 OUTPUT_DIR="${TARGET_DIR}/mp3"
