@@ -66,7 +66,7 @@ echo "File(s) converted and stored in $OUTPUT_DIR" | tee -a "$LOG_FILE"
 # Give user option to delete original files
 read -p "Would you like to delete the original (.wav and .cue) files? (y/n) " delete
 
-if [ "$delete" = 'y' ]; then
+if [[ "$delete" =~ ^[Yy]([Ee][Ss])?$ ]]; then
 
   echo "" >> "$LOG_FILE"
 
