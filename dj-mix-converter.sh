@@ -48,11 +48,21 @@ fi
 # Iterate over list of files and convert to .mp3.
 # Quoting "${WAV_FILES[@]}" expands each array element as a single argument,
 # so paths with spaces stay intact.
+converted=0
+skipped=0
 for file in "${WAV_FILES[@]}"; do
 
   # Get file name from absolute path, stripping the .wav extension.
   # ${file%.wav} removes the trailing ".wav" via parameter expansion.
   name=$(basename "${file%.wav}")
+  output="${OUTPUT_DIR}/${name}.mp3"
+
+  if [ -f "$output" ]; then
+    echo "Skipping ${name}.wav (mp3 already exists)" | tee -a "$LOG_FILE"
+    echo
+    skipped=$((skipped + 1))
+    continue
+  fi
 
   echo "Converting ${name}.wav to .mp3..."
 
@@ -72,7 +82,8 @@ for file in "${WAV_FILES[@]}"; do
   } >> "$LOG_FILE"
 done
 
-echo "File(s) converted and stored in $OUTPUT_DIR" | tee -a "$LOG_FILE"
+echo "Converted ${converted}, skipped ${skipped} of ${#WAV_FILES[@]} file(s). Converted files stored in $OUTPUT_DIR". | tee -a "$LOG_FILE"
+echo
 
 # Give user option to delete original files
 read -p "Would you like to delete the original (.wav and .cue) files? (y/n) " delete
