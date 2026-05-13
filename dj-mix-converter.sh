@@ -12,10 +12,12 @@ TARGET_DIR="${HOME}/Music/rekordbox/Recording"
 OUTPUT_DIR="${TARGET_DIR}/mp3"
 mkdir -p "$OUTPUT_DIR"
 
-# Create logs and output directories
+# Create logs directory next to the script itself rather than dir where script
+# is called
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 TIMESTAMP=$(date +"%d-%m-%Y_%H-%M-%S")
-mkdir -p logs
-LOG_FILE="logs/mix_conversion_${TIMESTAMP}.log"
+mkdir -p "$SCRIPT_DIR/logs"
+LOG_FILE="$SCRIPT_DIR/logs/mix_conversion_${TIMESTAMP}.log"
 
 # Create log file header
 {
