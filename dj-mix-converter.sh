@@ -15,7 +15,7 @@ mkdir -p "$OUTPUT_DIR"
 # Create logs directory next to the script itself rather than dir where script
 # is called
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-TIMESTAMP=$(date +"%d-%m-%Y_%H-%M-%S")
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 mkdir -p "$SCRIPT_DIR/logs"
 LOG_FILE="$SCRIPT_DIR/logs/mix_conversion_${TIMESTAMP}.log"
 
