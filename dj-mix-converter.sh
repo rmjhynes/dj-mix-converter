@@ -48,11 +48,16 @@ for file in "${WAV_FILES[@]}"; do
   # ${file%.wav} removes the trailing ".wav" via parameter expansion.
   name=$(basename "${file%.wav}")
 
+  echo "Converting ${name}.wav to .mp3..."
+
   # Convert to mp3 with ffmpeg and tee output to log file
+  ## -hide_banner: suppress build/library version block
+  ## -loglevel warning: only print warnings and errors
+  ## -stats: keep live progress line (size/time/bitrate)
   ## -n: skip creating output if it already exists
   ## -codec:a libmp3lame: audio codec - use LAME to encode MP3
   ## -b:a 320k: audio bitrate - set constant 320 kbps
-  ffmpeg -n -i "$file" -codec:a libmp3lame -b:a 320k "${OUTPUT_DIR}/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
+  ffmpeg -hide_banner -loglevel warning -stats -n -i "$file" -codec:a libmp3lame -b:a 320k "${OUTPUT_DIR}/${name}.mp3" 2>&1 | tee -a "$LOG_FILE"
 
   {
     echo ""
